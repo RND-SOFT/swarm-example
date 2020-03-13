@@ -1,0 +1,9 @@
+---
+- name: Install and configure traefik
+  hosts: 'managers'
+  run_once: true
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/infra/traefik }

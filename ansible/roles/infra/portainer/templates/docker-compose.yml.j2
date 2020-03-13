@@ -1,0 +1,78 @@
+version: "3.7"
+
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+    labels: com.docker.compose.service
+    env: INSTANCE
+  driver: json-file
+
+x-base: &base
+  stop_grace_period: ${STOP_GRACE_PERIOD-30}s
+  logging: *log
+  networks:
+    - portainer_network
+
+x-labels: &labels
+  labels:
+    - "traefik.enable=false"
+
+x-deploy: &deploy
+  resources:
+    limits:
+      memory: 200m
+  restart_policy:
+    condition: any
+  <<: *labels
+
+services:
+  agent:
+    <<: *base
+    <<: *labels
+    image: portainer/agent
+    volumes:
+      - tmp:/tmp
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    deploy:
+      <<: *deploy
+      mode: global
+      placement:
+        constraints: 
+          - node.platform.os == linux
+
+  portainer:
+    <<: *base
+    <<: *labels
+    image: portainer/portainer
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - tmp:/tmp
+      - portainer_data:/data
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  portainer_network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  portainer_data:
+
+  tmp:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m
+

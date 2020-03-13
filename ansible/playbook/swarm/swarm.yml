@@ -1,0 +1,11 @@
+---
+- name: Init and configure Docker Swarm
+  hosts: 'swarm'
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/swarm/docker-swarm }
+
+  tasks:
+    - debug: var=ansible_date_time.time

@@ -1,0 +1,55 @@
+version: "3.7"
+
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+  driver: json-file
+
+x-base: &base
+  restart: unless-stopped
+  stop_grace_period: ${STOP_GRACE_PERIOD-30}s
+  logging: *log
+
+x-labels: &labels
+  labels:
+    - "SERVICE_TAGS=traefik.enable=true,traefik.http.routers.{{ instance }}/{{ service_name }}.rule=Host(`{{ service_name }}.{{ instance }}.{{ domain }}`)"
+    - SERVICE_NAME={{ instance }}/{{ service_name }}
+    - SERVICE_CHECK_HTTP=/
+    - SERVICE_CHECK_INTERVAL=40s
+    - SERVICE_CHECK_TIMEOUT=3s
+    - SERVICE_CHECK_DEREGISTER_AFTER=1m
+
+x-deploy: &deploy
+  resources:
+    limits:
+      memory: 201m
+  restart_policy:
+    condition: any
+  <<: *labels
+
+services:
+  hello:
+    <<: *base
+    image: tutum/hello-world
+    <<: *labels
+    deploy:
+      <<: *deploy
+      mode: global
+      placement:
+        constraints:
+          - node.labels.app==True
+    ports:
+      - target: 80
+        protocol: tcp
+        mode: host
+    volumes:
+      - tmp:/tmp
+
+volumes:
+  tmp:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m

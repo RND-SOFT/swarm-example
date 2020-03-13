@@ -1,0 +1,61 @@
+version: "3.7"
+
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+    labels: com.docker.compose.service
+    env: INSTANCE
+  driver: json-file
+
+x-base: &base
+  stop_grace_period: ${STOP_GRACE_PERIOD-30}s
+  logging: *log
+
+x-labels: &labels
+  labels:
+    - "traefik.enable=false"
+
+x-deploy: &deploy
+  resources:
+    limits:
+      memory: 200m
+  restart_policy:
+    condition: any
+  <<: *labels
+
+services:
+  traefik:
+    <<: *base
+    <<: *labels
+    image: traefik:latest
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.gate==True
+    command: [
+      "--configFile=/traefik.yml"
+    ]
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+      #- target: 8080
+      #    published: 8080
+      #    protocol: tcp
+    configs:
+      - source: config6
+        target: /traefik.yml
+
+
+configs:
+  config6:
+    file: ./traefik.yml

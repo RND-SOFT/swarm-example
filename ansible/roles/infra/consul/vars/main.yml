@@ -1,0 +1,4 @@
+---
+service_name: consul
+service_config_path: /storage/configs/infra/{{ service_name }}
+service_storage_path: /storage/infra/{{ service_name }}

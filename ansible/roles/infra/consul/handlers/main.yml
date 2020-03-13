@@ -1,0 +1,5 @@
+- name: docker-update
+  shell: docker-compose  up -d --no-build --force-recreate
+  args:
+    chdir: '{{ service_config_path }}'
+

@@ -1,0 +1,11 @@
+---
+- name: Install SSH Deploy keys
+  copy:
+    src: "files/deploy.pub"
+    dest: /home/docker/.ssh/authorized_keys3
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - ssh
+    - ssh-deploy

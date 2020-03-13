@@ -1,0 +1,32 @@
+---
+- name: Install common packages
+  shell: |
+    tce-load -wi python
+    curl https://bootstrap.pypa.io/get-pip.py | sudo python -
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+
+- name: Install pip docker package for manage docker
+  pip:
+    name: docker
+  tags:
+    - docker
+    - docker-install
+    - docker-install-pip
+    
+
+- name: Copy config for rotation json logs docker containers
+  copy:
+    src: "{{ role_path }}/files/daemon.json"
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+    - docker-logs
+

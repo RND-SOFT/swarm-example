@@ -1,0 +1,11 @@
+---
+- name: Debug tasks
+  hosts: 'swarm'
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/debug }
+
+  tasks:
+    - debug: var=ansible_date_time.time

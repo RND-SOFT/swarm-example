@@ -1,0 +1,5 @@
+---
+
+service_name: "traefik"
+service_config_path: /storage/configs/infra/{{ service_name }}
+swarm_network: "{{ lookup('env','SWARM_NETWORK') | default('proxy', true) }}"

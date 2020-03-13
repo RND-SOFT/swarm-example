@@ -1,0 +1,5 @@
+---
+swarm_leader_hostname: "{{ groups['managers'][0] }}"
+swarm_leader: "{{ inventory_hostname == swarm_leader_hostname }}"
+leader_addr: "{{ swarm_leader_hostname }}:2377"
+advertise_addr: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"

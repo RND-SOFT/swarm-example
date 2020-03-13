@@ -1,0 +1,4 @@
+---
+
+service_name: "hello"
+service_config_path: /storage/configs/{{ instance }}/{{ service_name }}

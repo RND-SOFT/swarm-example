@@ -1,0 +1,9 @@
+---
+- import_playbook: infra/db.yml
+- import_playbook: infra/portainer.yml
+- import_playbook: infra/traefik.yml
+- import_playbook: infra/consul.yml
+- import_playbook: infra/registrator.yml
+  
+
+

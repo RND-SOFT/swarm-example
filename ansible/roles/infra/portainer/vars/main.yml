@@ -1,0 +1,7 @@
+---
+
+service_name: "portainer"
+service_config_path: /storage/configs/infra/{{ service_name }}
+
+
+

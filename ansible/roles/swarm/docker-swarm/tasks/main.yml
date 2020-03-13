@@ -1,0 +1,68 @@
+---
+
+- name: Initialize Docker Swarm Cluster. Execute only on LEADER
+  run_once: true
+  block:
+    - name: Setup docker swarm leader node [LEADER]
+      docker_swarm:
+        state: present
+        advertise_addr: "{{ advertise_addr }}"
+
+      tags:
+        - docker-swarm-init
+
+    - name: Get manager join-token [LEADER]
+      shell: "docker swarm join-token --quiet manager"
+      register: manager_token
+
+      tags:
+        - docker-swarm-init
+
+    - name: Get worker join-token [LEADER]
+      shell: "docker swarm join-token --quiet worker"
+      register: worker_token
+
+      tags:
+        - docker-swarm-init
+
+    - name: Join manager nodes to swarm [LEADER]
+      docker_swarm:
+        state: join
+        advertise_addr: "{{ advertise_addr }}"
+        join_token: "{{ manager_token.stdout }}"
+        remote_addrs: [ "{{ leader_addr }}" ]
+
+      delegate_to: "{{item}}"
+      loop: "{{groups['managers']}}"
+      tags:
+        - docker-swarm-init
+        - docker-swarm-init-managers
+        
+    - name: Join worker nodes to swarm [LEADER]
+      docker_swarm:
+        state: join
+        advertise_addr: "{{ advertise_addr }}"
+        join_token: "{{ worker_token.stdout }}"
+        remote_addrs: [ "{{ leader_addr }}" ]
+
+      delegate_to: "{{item}}"
+      loop: "{{groups['workers']}}"
+      tags:
+        - docker-swarm-init
+        - docker-swarm-init-workers
+
+    - name: Set node labels [LEADER]
+      docker_node:
+        hostname: "{{ item }}"
+        labels:
+          gate: "{{ item in groups['gates'] | string }}"
+          app: "{{ item in groups['apps'] | string }}"
+          persistent: "{{ hostvars[item]['persistent_node'] | default(False) | string }}"
+      loop: "{{groups['swarm']}}"
+      tags:
+        - docker-swarm-init
+
+
+
+
+

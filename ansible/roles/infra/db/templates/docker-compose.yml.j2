@@ -1,0 +1,35 @@
+version: "2.3"
+
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+  driver: json-file
+
+x-base: &base
+  restart: unless-stopped
+  stop_grace_period: ${STOP_GRACE_PERIOD-30}s
+  labels:
+    - "traefik.enable=false"
+  logging: *log
+  
+services:
+  postgres:
+    <<: *base
+    image: postgres:10-alpine
+    mem_limit: 500M
+    ports:
+      - "{{ database_port }}:5432"
+    environment:
+      - POSTGRES_PASSWORD=123123123
+    volumes:
+      - {{ service_storage_path }}/data:/var/lib/postgresql/data
+      - tmp:/tmp
+
+volumes:
+  tmp:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m

@@ -1,0 +1,76 @@
+version: "2.3"
+
+x-log: &log
+  options:
+    max-size: '50m'
+    max-file: '3'
+  driver: json-file
+
+x-labels: &labels
+  labels:
+    - "SERVICE_TAGS=traefik.enable=true,traefik.http.routers.consul.rule=Host(`consul.{{ domain }}`),traefik.http.services.consul.loadbalancer.server.port=8500"
+    - SERVICE_NAME=consul
+    - SERVICE_8300_IGNORE=true
+    - SERVICE_8301_IGNORE=true
+    - SERVICE_8302_IGNORE=true
+    - SERVICE_8600_IGNORE=true
+    - SERVICE_8500_CHECK_TCP=true
+    - SERVICE_8500_CHECK_INTERVAL=40s
+    - SERVICE_8500_CHECK_TIMEOUT=3s
+    - SERVICE_CHECK_DEREGISTER_AFTER=1m
+
+x-base: &base
+  restart: unless-stopped
+  stop_grace_period: ${STOP_GRACE_PERIOD-30}s
+  logging: *log
+  <<: *labels
+
+
+services:
+  consul:
+    <<: *base
+    image: consul:latest
+    mem_limit: 500M
+    volumes:
+      - tmp:/tmp
+      - consul_data:/consul/data
+      - consul_checks:/consul/data/checks
+      - consul_services:/consul/data/services
+      - {{ service_config_path }}/config.json:/consul/config/config.json
+    ports:
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
+      - '8300-8302:8300-8302/tcp'
+      - '8301-8302:8301-8302/udp'
+    command: ["consul", "agent", "-ui",
+      "-config-dir", "/consul/config",
+      "-data-dir", "/consul/data",
+      "-advertise", "{{ ansible_host }}",
+      "-bind", "0.0.0.0",
+      "-client", "0.0.0.0",
+      "-log-level", "info"
+    ]
+
+volumes:
+  consul_data:
+
+  tmp:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m
+  consul_checks:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m
+  consul_services:
+    driver: local
+    driver_opts: 
+      type: tmpfs
+      device: tmpfs
+      o: size=100m
+

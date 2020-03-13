@@ -1,0 +1,57 @@
+---
+- name: Deploy Traefik to Docker Swarm Cluster
+  block:
+  - name: Create directory structure
+    file: path={{ item }} state=directory mode=755
+    with_items:
+      - '{{ service_config_path }}'
+      - '{{ service_config_path }}/certs'
+    tags:
+      - init
+      - traefik
+      - traefik-init
+
+#  - name: Copy cert files
+#    copy: src={{ item.src }} dest={{ service_config_path }}/certs/{{ item.dest }} mode={{ item.mode }}
+#    with_items:
+#      - { src: "{{ domain }}/cert.pem", dest: cert.pem, mode: 644 }
+#      - { src: "{{ domain }}/key.pem", dest: key.pem, mode: 644 }
+#    tags:
+#      - conf
+#      - traefik
+#      - traefik-conf
+        
+  - name: Configure
+    template: src={{ item.src }} dest={{ service_config_path }}/{{ item.dest }} mode={{ item.mode }}
+    with_items:
+      - { src: .env.j2, dest: .env, mode: 644 }
+      - { src: docker-compose.yml.j2, dest: docker-compose.yml, mode: 644 }
+      - { src: traefik.yml.j2, dest: traefik.yml, mode: 644 }
+    notify: docker-update
+    tags:
+      - conf
+      - traefik
+      - traefik-conf
+
+  - name: Pull
+    shell: docker-compose pull --no-parallel
+    register: pullout
+    changed_when: "'Downloaded newer image' in pullout.stdout"
+    notify: docker-update
+    args:
+      chdir: '{{ service_config_path }}'
+    tags:
+      - pull
+      - traefik
+      - traefik-pull
+
+  - name: Start
+    shell: docker service ls | grep {{ service_name }} || true
+    register: pullout
+    changed_when: "pullout.stdout_lines | length < 2"
+    notify: docker-update
+    tags:
+      - up
+      - traefik
+      - traefik-up
+

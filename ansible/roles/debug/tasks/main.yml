@@ -1,0 +1,4 @@
+---
+- name: Print message
+  debug:
+    msg: System {{ inventory_hostname }} has ip {{ ansible_host }}

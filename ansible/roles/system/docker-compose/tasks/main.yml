@@ -1,0 +1,23 @@
+---
+
+- name: Download docker-compose bin
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_facts['system']}}-{{ansible_facts['architecture']}}
+    dest: /usr/local/bin/docker-compose
+    backup: yes
+    force: yes
+    mode: 0755
+  tags:
+    - docker
+    - docker-install
+    - docker-compose
+
+- name: Create docker-compose link
+  file:
+    src: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
+    state: link
+  tags:
+    - docker
+    - docker-install
+    - docker-compose

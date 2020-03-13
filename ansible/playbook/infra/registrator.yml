@@ -1,0 +1,8 @@
+---
+- name: Install and configure registrator
+  hosts: 'all'
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/infra/registrator }

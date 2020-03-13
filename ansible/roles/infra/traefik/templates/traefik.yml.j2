@@ -1,0 +1,27 @@
+api:
+  dashboard: true
+  insecure: true
+  debug: true
+
+providers:
+  file:
+    filename: "/traefik.toml"
+
+  consulCatalog:
+    exposedByDefault: false
+    endpoint:
+      address: "http://{{ consul_host }}"
+  
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+
+log:
+  level: "DEBUG"
+
+
+

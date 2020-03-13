@@ -1,0 +1,9 @@
+---
+- name: Install SSH deploy keys
+  hosts: all
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/system/ssh }
+

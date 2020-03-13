@@ -1,0 +1,49 @@
+---
+- name: Initialize DB
+  block:
+  - name: Create directory structure
+    file: path={{ item }} state=directory mode=755
+    with_items:
+      - '{{ service_config_path }}'
+      - '{{ service_storage_path }}/data'
+    tags:
+      - init
+      - db
+      - db-init
+
+  - name: Configure
+    template: src={{ item.src }} dest={{ service_config_path }}/{{ item.dest }} mode={{ item.mode }}
+    with_items:
+      - { src: .env.j2, dest: .env, mode: 644 }
+      - { src: docker-compose.yml.j2, dest: docker-compose.yml, mode: 644 }
+    notify: docker-update
+    tags:
+      - conf
+      - db
+      - db-conf
+
+  - name: Pull
+    shell: docker-compose pull --no-parallel
+    register: pullout
+    changed_when: "'Downloaded newer image' in pullout.stdout"
+    notify: docker-update
+    args:
+      chdir: '{{ service_config_path }}'
+    tags:
+      - never
+      - pull
+      - db
+      - db-pull
+
+  - name: Start
+    shell: docker-compose ps -q
+    register: pullout
+    changed_when: "pullout.stdout_lines | length == 0"
+    notify: docker-update
+    args:
+      chdir: '{{ service_config_path }}'
+    tags:
+      - up
+      - db
+      - db-up
+
