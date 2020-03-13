@@ -28,7 +28,7 @@
     - name: Join manager nodes to swarm [LEADER]
       docker_swarm:
         state: join
-        advertise_addr: "{{ advertise_addr }}"
+        advertise_addr: "{{ item }}"
         join_token: "{{ manager_token.stdout }}"
         remote_addrs: [ "{{ leader_addr }}" ]
 
@@ -41,7 +41,7 @@
     - name: Join worker nodes to swarm [LEADER]
       docker_swarm:
         state: join
-        advertise_addr: "{{ advertise_addr }}"
+        advertise_addr: "{{ item }}"
         join_token: "{{ worker_token.stdout }}"
         remote_addrs: [ "{{ leader_addr }}" ]
 

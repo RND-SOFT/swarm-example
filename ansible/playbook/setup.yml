@@ -1,5 +1,4 @@
 ---
-- import_playbook: system/ssh.yml
 - import_playbook: system/docker.yml
   
 

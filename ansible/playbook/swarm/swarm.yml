@@ -1,6 +1,6 @@
 ---
 - name: Init and configure Docker Swarm
-  hosts: 'swarm'
+  hosts: 'managers'
   become: yes
   environment:
     DEBIAN_FRONTEND: 'noninteractive'

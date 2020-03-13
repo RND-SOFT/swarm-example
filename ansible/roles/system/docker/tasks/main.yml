@@ -1,12 +1,93 @@
 ---
 - name: Install common packages
-  shell: |
-    tce-load -wi python
-    curl https://bootstrap.pypa.io/get-pip.py | sudo python -
+  apt:
+    force_apt_get: yes
+    state: latest
+    update_cache: yes
+    cache_valid_time: 1
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg-agent
+      - gnupg2
   tags:
     - docker
     - docker-install
     - docker-install-common
+
+- name: Get Docker gpg key
+  get_url:
+    url: https://download.docker.com/linux/{{ansible_facts['distribution'].lower()}}/gpg
+    dest: /tmp/docker.gpg
+    checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570
+    force: yes
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+
+- name: Add Docker gpg key
+  apt_key:
+    file: /tmp/docker.gpg
+    state: present
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+
+- name: Add docker repo
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/{{ansible_facts['distribution'].lower()}} {{ansible_facts['distribution_release']}} stable"
+    state: present
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+
+- name: Remove old docker packages
+  apt:
+    force_apt_get: yes
+    state: absent
+    autoremove: yes
+    autoclean: yes
+    purge: yes
+    pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+
+- name: Install docker packages
+  apt:
+    force_apt_get: yes
+    state: latest
+    update_cache: yes
+    cache_valid_time: 1
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - python-docker
+  tags:
+    - docker
+    - docker-install
+    - docker-install-common
+    
+- name: Install python-pip
+  apt:
+    force_apt_get: yes
+    state: present
+    pkg:
+      - python-pip
+  tags:
+    - docker
+    - docker-install
+    - docker-install-pip
 
 - name: Install pip docker package for manage docker
   pip:
@@ -29,4 +110,6 @@
     - docker-install
     - docker-install-common
     - docker-logs
+  notify:
+    - docker-restart
 
