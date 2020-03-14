@@ -1,0 +1,11 @@
+---
+- name: Install SSH Deploy keys
+  copy:
+    src: "files/deploy_rsa.pub"
+    dest: /root/.ssh/authorized_keys2
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - ssh
+    - ssh-deploy

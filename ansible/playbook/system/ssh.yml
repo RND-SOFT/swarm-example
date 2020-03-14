@@ -1,0 +1,9 @@
+---
+- name: Install docker and docker-compose
+  hosts: all
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: 'noninteractive'
+  roles:
+    - { role: roles/system/ssh }
+
