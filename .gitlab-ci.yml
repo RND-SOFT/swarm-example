@@ -82,7 +82,7 @@ deploy:example:dynamic:manual:
     CLOUD: example
     INSTANCE: $CI_COMMIT_REF_SLUG
   environment:
-    name: example/${$CI_COMMIT_REF_SLUG}/hello
+    name: example/${CI_COMMIT_REF_SLUG}/hello
     on_stop: stop:example:dynamic
     auto_stop_in: 1 week
 
@@ -119,7 +119,7 @@ stop:example:dynamic:
     CLOUD: example
     INSTANCE: $CI_COMMIT_REF_SLUG
   environment:
-    name: example/${$CI_COMMIT_REF_SLUG}/hello
+    name: example/${CI_COMMIT_REF_SLUG}/hello
     action: stop
 
 
