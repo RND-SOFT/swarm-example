@@ -21,6 +21,7 @@ stages:
   - tests
   - build
   - deploy
+  - stop
 
 test:
   image: pad92/ansible-alpine:latest
@@ -74,10 +75,21 @@ deploy:example:stage:manual:
   extends: .deploy_stage_static
   when: manual
 
+deploy:example:dynamic:manual:
+  extends: .deploy
+  when: manual
+  variables:
+    CLOUD: example
+    INSTANCE: $CI_COMMIT_REF_SLUG
+  environment:
+    name: example/${$CI_COMMIT_REF_SLUG}/hello
+    on_stop: stop:example:dynamic
+    auto_stop_in: 1 week
+
 
 .stop:
   image: pad92/ansible-alpine:latest
-  stage: deploy
+  stage: stop
   script:
     - echo stop
     - echo ${CLOUD}
@@ -100,6 +112,15 @@ stop:example:stage:
   variables:
     CLOUD: example
     INSTANCE: stage
+
+stop:example:dynamic:
+  extends: .stop
+  variables:
+    CLOUD: example
+    INSTANCE: $CI_COMMIT_REF_SLUG
+  environment:
+    name: example/${$CI_COMMIT_REF_SLUG}/hello
+    action: stop
 
 
 
