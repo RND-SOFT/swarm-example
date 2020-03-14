@@ -44,6 +44,9 @@ build:
   script:
     - cd ansible
     - ansible-playbook -i ${CLOUD}.ini -e instance=${INSTANCE} playbook/app.yml -D
+  environment:
+    name: ${CLOUD}/${INSTANCE}/hello
+    url: http://hello.${INSTANCE}.example.local/
 
 deploy:dev:manual:
   extends: .deploy
@@ -51,11 +54,13 @@ deploy:dev:manual:
   variables:
     INSTANCE: dev
   
+  
 
 deploy:stage:manual:
   extends: .deploy
   when: manual
   variables:
     INSTANCE: stage
+
 
 
