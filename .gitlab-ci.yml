@@ -51,6 +51,6 @@ deploy:dev:manual:
 deploy:stage:manual:
   extends: .deploy
   variables:
-    INSTANCE: dev
+    INSTANCE: stage
 
 
