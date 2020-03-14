@@ -74,6 +74,7 @@ deploy:example:stage:manual:
 #     action: stop
 
 stop_example:
+  image: pad92/ansible-alpine:latest
   stage: deploy
   script:
     - echo stop
