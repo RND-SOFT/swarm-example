@@ -25,6 +25,8 @@ stages:
 test:
   image: pad92/ansible-alpine:latest
   stage: tests
+  variables:
+    INSTANCE: dev
   script:
     - echo test ok
     - cd ansible
