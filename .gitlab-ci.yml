@@ -47,28 +47,47 @@ build:
   environment:
     name: ${CLOUD}/${INSTANCE}/hello
     url: http://hello.${INSTANCE}.${CLOUD}.local/
-    on_stop: stop:${CLOUD}/${INSTANCE}
-    auto_stop_in: 1 week
+    on_stop: stop_example
+    #auto_stop_in: 1 week
 
-.stop:
-  stage: deploy
+deploy:example:dev:manual:
+  extends: .deploy
   when: manual
   variables:
-    CLOUD: example
-    GIT_STRATEGY: none
+    INSTANCE: dev
+
+deploy:example:stage:manual:
+  extends: .deploy
+  when: manual
+  variables:
+    INSTANCE: stage
+
+# .stop:
+#   stage: deploy
+#   when: manual
+#   variables:
+#     CLOUD: example
+#     GIT_STRATEGY: none
+#     INSTANCE: dev
+#   environment:
+#     name: ${CLOUD}/${INSTANCE}/hello
+#     action: stop
+
+stop_example:
+  stage: deploy
+  script:
+    - echo stop
+    - echo ${CLOUD}
+    - echo ${INSTANCE}
+  when: manual
   environment:
     name: ${CLOUD}/${INSTANCE}/hello
     action: stop
-
-stop:example/dev:
-  extends: .stop
-  variables:
-    INSTANCE: dev
   
-stop:example/stage:
-  extends: .stop
-  variables:
-    INSTANCE: stage
+# deploy:example:stage:
+#   extends: .stop
+#   variables:
+#     INSTANCE: stage
 
 
 
