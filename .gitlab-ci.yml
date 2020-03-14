@@ -51,38 +51,19 @@ build:
     url: http://hello.${INSTANCE}.${CLOUD}.local/
     on_stop: stop_example
 
-.deploy_dev_static:
+deploy:example:dev:manual:
   extends: .deploy
-  variables:
-    CLOUD: example
-    INSTANCE: dev
   environment:
     on_stop: stop:example:dev
-
-.deploy_stage_static:
-  extends: .deploy
-  variables:
-    CLOUD: example
-    INSTANCE: stage
-  environment:
-    on_stop: stop:example:stage
-
-deploy:example:dev:manual:
-  extends: .deploy_dev_static
-  when: manual
-
-deploy:example:stage:manual:
-  extends: .deploy_stage_static
-  when: manual
 
 deploy:example:dynamic:manual:
   extends: .deploy
   when: manual
   variables:
-    CLOUD: example
     INSTANCE: $CI_COMMIT_REF_SLUG
   environment:
     name: example/$CI_COMMIT_REF_SLUG/hello
+    url: http://hello.$CI_COMMIT_REF_SLUG.${CLOUD}.local/
     on_stop: stop:example:dynamic
     auto_stop_in: 1 week
 
@@ -90,10 +71,10 @@ deploy:example:dynamic:manual:
 .stop:
   image: pad92/ansible-alpine:latest
   stage: stop
+  variables:
+    CLOUD: example
+    INSTANCE: dev
   script:
-    - echo stop
-    - echo ${CLOUD}
-    - echo ${INSTANCE}
     - cd ansible
     - ansible-playbook -i ${CLOUD}.ini -e instance=${INSTANCE} playbook/app.yml -D -t hello-down
   when: manual
@@ -103,20 +84,10 @@ deploy:example:dynamic:manual:
   
 stop:example:dev:
   extends: .stop
-  variables:
-    CLOUD: example
-    INSTANCE: dev
-
-stop:example:stage:
-  extends: .stop
-  variables:
-    CLOUD: example
-    INSTANCE: stage
 
 stop:example:dynamic:
   extends: .stop
   variables:
-    CLOUD: example
     INSTANCE: $CI_COMMIT_REF_SLUG
   environment:
     name: example/$CI_COMMIT_REF_SLUG/hello
