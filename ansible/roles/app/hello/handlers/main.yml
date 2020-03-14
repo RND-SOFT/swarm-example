@@ -1,4 +1,5 @@
 - name: docker-update
   shell: docker stack deploy --prune --with-registry-auth --compose-file docker-compose.yml {{ instance }}_{{ service_name }}
+  changed_when: "pullout.stdout_lines | length == 0"
   args:
     chdir: '{{ service_config_path }}'

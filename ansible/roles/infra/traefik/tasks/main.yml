@@ -46,9 +46,6 @@
       - traefik-pull
 
   - name: Start
-    shell: docker service ls | grep {{ service_name }} || true
-    register: pullout
-    changed_when: "pullout.stdout_lines | length < 2"
     notify: docker-update
     tags:
       - up
