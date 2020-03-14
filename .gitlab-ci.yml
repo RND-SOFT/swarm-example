@@ -39,17 +39,22 @@ build:
 .deploy:
   image: pad92/ansible-alpine:latest
   stage: deploy
+  variables:
+    CLOUD: dev
   script:
     - cd ansible
-    - ansible-playbook -i ${INSTANCE}.ini playbook/app.yml -D
+    - ansible-playbook -i ${CLOUD}.ini -e instance=${INSTANCE} playbook/app.yml -D
 
 deploy:dev:manual:
   extends: .deploy
+  when: manual
   variables:
     INSTANCE: dev
+  
 
 deploy:stage:manual:
   extends: .deploy
+  when: manual
   variables:
     INSTANCE: stage
 
