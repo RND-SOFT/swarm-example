@@ -46,6 +46,8 @@
       - traefik-pull
 
   - name: Start
+    debug:
+      msg: Restarting service
     notify: docker-update
     tags:
       - up
