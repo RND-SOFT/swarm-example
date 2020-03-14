@@ -48,6 +48,7 @@
   - name: Start
     debug:
       msg: Restarting service
+    changed_when: "True"
     notify: docker-update
     tags:
       - up
