@@ -15,7 +15,6 @@
     with_items:
       - { src: .env.j2, dest: .env, mode: 644 }
       - { src: docker-compose.yml.j2, dest: docker-compose.yml, mode: 644 }
-    notify: docker-update
     tags:
       - conf
       - hello
@@ -25,7 +24,6 @@
     shell: docker-compose pull --no-parallel
     register: pullout
     changed_when: "'Downloaded newer image' in pullout.stdout"
-    notify: docker-update
     args:
       chdir: '{{ service_config_path }}'
     tags:
@@ -34,12 +32,20 @@
       - hello-pull
 
   - name: Start
-    debug:
-      msg: Restarting service
-    changed_when: "True"
-    notify: docker-update
+    shell: docker stack deploy --prune --with-registry-auth --compose-file docker-compose.yml {{ instance }}_{{ service_name }}
+    args:
+      chdir: '{{ service_config_path }}'
     tags:
       - up
       - hello
       - hello-up
+
+  - name: Stop
+    shell: docker stack rm {{ instance }}_{{ service_name }}
+    args:
+      chdir: '{{ service_config_path }}'
+    tags:
+      - never
+      - hello-down
+
 

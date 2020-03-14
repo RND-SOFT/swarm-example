@@ -40,27 +40,36 @@ build:
   image: pad92/ansible-alpine:latest
   stage: deploy
   variables:
-    CLOUD: dev
+    CLOUD: example
   script:
     - cd ansible
     - ansible-playbook -i ${CLOUD}.ini -e instance=${INSTANCE} playbook/app.yml -D
   environment:
     name: ${CLOUD}/${INSTANCE}/hello
-    url: http://hello.${INSTANCE}.example.local/
+    url: http://hello.${INSTANCE}.${CLOUD}.local/
+    on_stop: stop:${CLOUD}/${INSTANCE}
+    auto_stop_in: 1 week
 
-deploy:dev:manual:
-  extends: .deploy
+.stop:
+  stage: deploy
   when: manual
+  variables:
+    CLOUD: example
+    GIT_STRATEGY: none
+  environment:
+    name: ${CLOUD}/${INSTANCE}/hello
+    action: stop
+
+stop:example/dev:
+  extends: .stop
   variables:
     INSTANCE: dev
   
-  
-
-deploy:stage:manual:
-  extends: .deploy
-  when: manual
+stop:example/stage:
+  extends: .stop
   variables:
     INSTANCE: stage
+
 
 
 
