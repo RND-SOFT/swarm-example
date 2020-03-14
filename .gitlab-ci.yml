@@ -26,25 +26,26 @@ test:
   image: pad92/ansible-alpine:latest
   stage: tests
   script:
-    - ssh-add -l
-    - ssh jerry@172.22.1.11 -C ls
-    - ssh -o ProxyCommand="ssh -A -W %h:%p -q jerry@172.22.1.11" root@192.168.99.104 -C ls
     - echo test ok
-
-build:
-  image: pad92/ansible-alpine:latest
-  stage: build
-  script:
-    - echo build ok
-
-deploy:
-  image: pad92/ansible-alpine:latest
-  stage: deploy
-  variables:
-    INSTANCE: dev
-  script:
     - cd ansible
     - ssh jerry@172.22.1.11 -C ls
     - ssh -o ProxyCommand="ssh -W %h:%p -q jerry@172.22.1.11" root@192.168.99.104 -C ls
     - ansible-playbook -i ${INSTANCE}.ini playbook/app.yml -D
+
+# build:
+#   image: pad92/ansible-alpine:latest
+#   stage: build
+#   script:
+#     - echo build ok
+
+# deploy:
+#   image: pad92/ansible-alpine:latest
+#   stage: deploy
+#   variables:
+#     INSTANCE: dev
+#   script:
+#     - cd ansible
+#     - ssh jerry@172.22.1.11 -C ls
+#     - ssh -o ProxyCommand="ssh -W %h:%p -q jerry@172.22.1.11" root@192.168.99.104 -C ls
+#     - ansible-playbook -i ${INSTANCE}.ini playbook/app.yml -D
 
