@@ -40,5 +40,6 @@ deploy:
   variables:
     INSTANCE: dev
   script:
+    - cd ansible
     - ansible-playbook -i ${INSTANCE}.ini playbook/app.yml -D
 
