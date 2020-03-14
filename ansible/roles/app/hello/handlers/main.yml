@@ -1,4 +1,4 @@
 - name: docker-update
-  shell: docker stack deploy --prune --with-registry-auth --compose-file docker-compose.yml {{ instance }}/{{ service_name }}
+  shell: docker stack deploy --prune --with-registry-auth --compose-file docker-compose.yml {{ instance }}_{{ service_name }}
   args:
     chdir: '{{ service_config_path }}'
