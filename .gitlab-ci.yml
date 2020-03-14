@@ -23,19 +23,19 @@ stages:
   - deploy
 
 test:
-  image: ansible/ansible
+  image: pad92/ansible-alpine:latest
   stage: tests
   script:
     - echo test ok
 
 build:
-  image: ansible/ansible
+  image: pad92/ansible-alpine:latest
   stage: build
   script:
     - echo build ok
 
 deploy:
-  image: ansible/ansible
+  image: pad92/ansible-alpine:latest
   stage: deploy
   variables:
     INSTANCE: dev
