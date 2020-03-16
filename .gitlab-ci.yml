@@ -51,12 +51,12 @@ build:
     url: http://hello.${INSTANCE}.${CLOUD}.local/
     on_stop: stop_example
 
-deploy:example:dev:manual:
+deploy:dev:manual:
   extends: .deploy
   environment:
     on_stop: stop:example:dev
 
-deploy:example:dynamic:manual:
+deploy:branch:manual:
   extends: .deploy
   when: manual
   variables:
