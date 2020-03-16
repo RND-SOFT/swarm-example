@@ -53,6 +53,7 @@ build:
 
 deploy:dev:manual:
   extends: .deploy
+  when: manual
   environment:
     on_stop: stop:example:dev
 
