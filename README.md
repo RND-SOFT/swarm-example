@@ -80,7 +80,7 @@
 ### Шаг 3 - Настройка кластерной инфраструктуры
 
 Выполняется в плейбуке [playbook/infra.yml](ansible/playbook/infra.yml)
-<br>Команда: `ansible-playbook -i [example.ini](example.ini) playbook/infra.yml -D`
+<br>Команда: `ansible-playbook -i example.ini playbook/infra.yml -D`
 <br>Что делает:
 * запускает все наши служебные сервисы
 * запускает базу на `persistent` ноде. Катается на группе db НЕ через swarm
