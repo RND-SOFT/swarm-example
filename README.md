@@ -51,7 +51,7 @@
 
 ### Шаг 1 - настройка хостов
 
-Выполняется в плейбуке playbook/setup.yml
+Выполняется в плейбуке [playbook/setup.yml](ansible/playbook/setup.yml)
 <br>Команда: `ansible-playbook -i example.ini playbook/setup.yml -D`
 <br>Что делает:
 * настраивает ssh-доступы из gitlab
@@ -63,11 +63,11 @@
 
 Если у вас нет желания использовать swarm то плейбуки и таски можно немного изменить и просто работать с несколькими независимыми docker-хостами. Архитектура кластера от этого не изменится, но вот способы распределения приложений по нодам придется придумать. В данном случае используется swarm для облегчения деплоя - можно иметь соединение только с одной машиной(swarm manager) и все развертывать через неё, а ограничения накладываются через метки(labels) на нодах docker-swarm и в ограничениях(constraints) при описании сервисов.
 
-Выполняется в плейбуке playbook/swarm.yml
+Выполняется в плейбуке [playbook/swarm.yml](ansible/playbook/swarm.yml)
 <br>Команда: `ansible-playbook -i example.ini playbook/swarm.yml -D`
 <br>Что делает:
 * переводит докеры на хостах в режим swarm
-* переводит некоторые ноды(согласто группам в example.ini) в режим manager
+* переводит некоторые ноды(согласто группам в [example.ini](ansible/example.ini)) в режим manager
 * собирает ноды в кластед docker swarm(инициализирует подключения через токены)
 * раздает метки(labels) нодам
 
@@ -80,8 +80,8 @@
 
 ### Шаг 3 - Настройка кластерной инфраструктуры
 
-Выполняется в плейбуке playbook/infra.yml
-<br>Команда: `ansible-playbook -i example.ini playbook/infra.yml -D`
+Выполняется в плейбуке [playbook/infra.yml](ansible/playbook/infra.yml)
+<br>Команда: `ansible-playbook -i [example.ini](example.ini) playbook/infra.yml -D`
 <br>Что делает:
 * запускает все наши служебные сервисы
 * запускает базу на `persistent` ноде. Катается на группе db НЕ через swarm
@@ -98,7 +98,7 @@
 
 Собственно именно этот шаг выполняется в CI/CD на регулярной основе. 
 
-Выполняется в плейбуке playbook/app.yml
+Выполняется в плейбуке [playbook/app.yml](ansible/playbook/app.yml)
 <br>Команда: `ansible-playbook -i example.ini -e instance=dev playbook/app.yml -D`
 
 <br>Что делает:
