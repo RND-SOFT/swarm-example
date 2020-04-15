@@ -1,7 +1,6 @@
 # Пример развертывания веб-приложения в простом кластере.
 
 Этот пример сделан для доклада на митапе [DistilleryTech](https://www.facebook.com/DistilleryRussia/posts/3200475796663282)
-
 <br>Ссылка на репозиторий [тут](https://github.com/RND-SOFT/swarm-example).
 <br>Ссылка на презентацию [тут](https://docs.google.com/presentation/d/1tXcIYyGL_9YnOSJCBA_Q51zVNvXJ2zMwMfOYB2T1zUk/edit?usp=sharing) 
 
