@@ -2,9 +2,8 @@
 
 Этот пример сделан для доклада на митапе [DistilleryTech](https://www.facebook.com/DistilleryRussia/posts/3200475796663282)
 
-Ссылка на репозиторий [тут](https://github.com/RND-SOFT/swarm-example).
-
-Ссылка на презентацию [тут](https://docs.google.com/presentation/d/1tXcIYyGL_9YnOSJCBA_Q51zVNvXJ2zMwMfOYB2T1zUk/edit?usp=sharing) 
+<br>Ссылка на репозиторий [тут](https://github.com/RND-SOFT/swarm-example).
+<br>Ссылка на презентацию [тут](https://docs.google.com/presentation/d/1tXcIYyGL_9YnOSJCBA_Q51zVNvXJ2zMwMfOYB2T1zUk/edit?usp=sharing) 
 
 ## Введение
 
@@ -62,7 +61,7 @@
 
 ### Шаг 2 - Запуск docker-swarm
 
-Если у вас нет желания использовать swarm то плейбуки и таски можно немного изменить и просто работать с несколькими независимыми docker-хостами. В данном случае используется swarm для облегчения деплоя - можно иметь соединение толькос одной машиной(swarm manager) и все развертывать через неё.
+Если у вас нет желания использовать swarm то плейбуки и таски можно немного изменить и просто работать с несколькими независимыми docker-хостами. Архитектура кластера от этого не исменится, но вот способы распределения приложений по нодам придется придумать. В данном случае используется swarm для облегчения деплоя - можно иметь соединение толькос одной машиной(swarm manager) и все развертывать через неё, а гораничения накладываются через метки(labels) на нодах docker-swarm и в ограничениях(constraints) при описании сервисов.
 
 Выполняется в плейбуке playbook/swarm.yml
 <br>Команда: `ansible-playbook -i example.ini playbook/swarm.yml -D`
